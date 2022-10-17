@@ -14,6 +14,11 @@ func TestUrl(t *testing.T) {
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, exceptions.ErrUserIdEmpty)
 	})
+	t.Run("When send empty string in urlId throw error, because url id is empty", func(t *testing.T) {
+		_, err := NewUrl("https://google.cl", "abc", "")
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, exceptions.ErrUrlIdEmpty)
+	})
 	t.Run("When send incorrect format link throw error, because link is invalid", func(t *testing.T) {
 		_, err := NewUrl("abc", "1", "abc")
 		assert.Error(t, err)
