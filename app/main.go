@@ -26,6 +26,7 @@ func main() {
 		Addr:     config.Redis.Address,
 		Password: config.Redis.Password,
 		DB:       config.Redis.Database,
+		Username: config.Redis.Username,
 	})
 	shortenerRepository := persistence.NewShortenerRepositoryRedis(rdb)
 

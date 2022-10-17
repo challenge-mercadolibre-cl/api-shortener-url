@@ -14,6 +14,7 @@ type ConfigRedis struct {
 	Address  string `env:"REDIS_ADDRESS"`
 	Password string `env:"REDIS_PASSWORD"`
 	Database int    `env:"REDIS_DATABASE"`
+	Username string `env:"REDIS_USERNAME"`
 }
 type Config struct {
 	Server ConfigServerHttp
