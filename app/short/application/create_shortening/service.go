@@ -7,7 +7,7 @@ import (
 )
 
 type ServiceCreateShortening interface {
-	Do(ctx context.Context, command CommandCreateShortening) error
+	Do(ctx context.Context, command CommandCreateShortening) (aggregations.Url, error)
 }
 
 type serviceCreateShortening struct {
@@ -20,14 +20,14 @@ func NewServiceCreateShortening(shortenerRepository repository.ShortenerReposito
 	}
 }
 
-func (g serviceCreateShortening) Do(ctx context.Context, command CommandCreateShortening) error {
+func (g serviceCreateShortening) Do(ctx context.Context, command CommandCreateShortening) (aggregations.Url, error) {
 	anUrl, err := aggregations.NewUrl(command.Url(), command.UserId())
 	if err != nil {
-		return err
+		return aggregations.Url{}, err
 	}
 	err = g.shortenerRepository.Save(ctx, anUrl)
 	if err != nil {
-		return err
+		return aggregations.Url{}, err
 	}
-	return nil
+	return anUrl, nil
 }

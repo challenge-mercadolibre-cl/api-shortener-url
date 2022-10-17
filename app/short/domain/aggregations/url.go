@@ -22,7 +22,7 @@ func NewUrl(link string, userId string) (Url, error) {
 		return Url{}, err
 	}
 
-	urlId, err := identifier.NewUrlId(urlUuid.Value().String())
+	urlId, err := identifier.NewUrlId(urlUuid.Value())
 	if err != nil {
 		return Url{}, err
 	}
