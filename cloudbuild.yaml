@@ -49,7 +49,7 @@ substitutions:
   _DOCKERFILE_NAME: Dockerfile
   _DOCKERFILE_DIR: ''
   _K8S_APP_NAME: api-shortener-url
-  _K8S_YAML_PATH: kubernetes/
+  _K8S_YAML_PATH: deployment/
   _OUTPUT_BUCKET_PATH: zeta-treat-365816_cloudbuild/deploy
   _K8S_LABELS: ''
   _GKE_LOCATION: us-central1-c
