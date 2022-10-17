@@ -34,7 +34,7 @@ func main() {
 	shorteningUpdateCommandHandler := update_shortening.NewCommandHandlerUpdateShortening(shorteningUpdateService)
 
 	shorteningFindOneUseCase := find_one_shortening.NewUseCaseFindOneShortening(shortenerRepository)
-	shorteningCreateUseCase := create_shortening.NewServiceCreateShortening(shortenerRepository)
+	shorteningCreateUseCase := create_shortening.NewUseCaseCreateShortening(shortenerRepository)
 	commandBus.Register(update_shortening.CommandTypeUpdateShortening, shorteningUpdateCommandHandler)
 
 	controller.NewShortenerHandler(server, commandBus, shorteningFindOneUseCase, shorteningCreateUseCase)

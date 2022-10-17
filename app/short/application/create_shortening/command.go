@@ -7,14 +7,16 @@ import (
 const CommandTypeCreateShortening command.Type = "command.shortening.create"
 
 type CommandCreateShortening struct {
-	url    string
-	userId string
+	url     string
+	userId  string
+	urlUuid string
 }
 
-func NewCommandCreateShortening(url string, userId string) CommandCreateShortening {
+func NewCommandCreateShortening(url string, userId string, urlUuid string) CommandCreateShortening {
 	return CommandCreateShortening{
-		url:    url,
-		userId: userId,
+		url:     url,
+		userId:  userId,
+		urlUuid: urlUuid,
 	}
 }
 
@@ -27,4 +29,8 @@ func (c *CommandCreateShortening) Url() string {
 }
 func (c CommandCreateShortening) Type() command.Type {
 	return CommandTypeCreateShortening
+}
+
+func (c CommandCreateShortening) UrlUuid() string {
+	return c.urlUuid
 }

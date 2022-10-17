@@ -20,10 +20,10 @@ type ShortenerResponse struct {
 type shortenerController struct {
 	commandBus     command.CommandBus
 	useCaseFindOne find_one_shortening.UseCaseFindOneShortening
-	useCaseCreate  create_shortening.ServiceCreateShortening
+	useCaseCreate  create_shortening.UseCaseCreateShortening
 }
 
-func NewShortenerHandler(e *echo.Echo, commandBus command.CommandBus, useCaseFindOne find_one_shortening.UseCaseFindOneShortening, useCaseCreate create_shortening.ServiceCreateShortening) {
+func NewShortenerHandler(e *echo.Echo, commandBus command.CommandBus, useCaseFindOne find_one_shortening.UseCaseFindOneShortening, useCaseCreate create_shortening.UseCaseCreateShortening) {
 	h := &shortenerController{commandBus: commandBus, useCaseFindOne: useCaseFindOne, useCaseCreate: useCaseCreate}
 	e.POST("/url/shortener", h.CreateShortenerUrl)
 	e.PUT("/url/shortener/:id", h.EditShortenerUrl)
@@ -70,7 +70,14 @@ func (s shortenerController) CreateShortenerUrl(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	cmd := create_shortening.NewCommandCreateShortening(r.Url, r.UserId)
+	
+	urlUuid, err := identifier.NewUrlUuid()
+
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	cmd := create_shortening.NewCommandCreateShortening(r.Url, r.UserId, urlUuid.Value())
 	useCase, err := s.useCaseCreate.Do(ctx, cmd)
 	if err != nil {
 		log.WithError(err).Error(err.Error())
@@ -99,11 +106,9 @@ func (s shortenerController) EditShortenerUrl(c echo.Context) error {
 		log.WithError(err).Error(err.Error())
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
-	urlUuid, _ := identifier.NewUrlUuid(u.Url, u.UserId)
-
 	return c.JSON(http.StatusCreated, ShortenerResponse{
 		Status: 201,
-		Data:   urlUuid.Value(),
+		Data:   u.UrlId,
 	})
 
 }

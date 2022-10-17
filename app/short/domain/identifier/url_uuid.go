@@ -8,7 +8,7 @@ type UrlUuid struct {
 	value string
 }
 
-func NewUrlUuid(url string, userId string) (urlId UrlUuid, err error) {
+func NewUrlUuid() (urlId UrlUuid, err error) {
 	shortCode := uuid.New().String()[:8]
 	return UrlUuid{value: shortCode}, nil
 }

@@ -6,22 +6,22 @@ import (
 	"github.com/challenge-mercadolibre-cl/api-shortener-url/app/short/domain/repository"
 )
 
-type ServiceCreateShortening interface {
+type UseCaseCreateShortening interface {
 	Do(ctx context.Context, command CommandCreateShortening) (aggregations.Url, error)
 }
 
-type serviceCreateShortening struct {
+type useCaseCreateShortening struct {
 	shortenerRepository repository.ShortenerRepository
 }
 
-func NewServiceCreateShortening(shortenerRepository repository.ShortenerRepository) serviceCreateShortening {
-	return serviceCreateShortening{
+func NewUseCaseCreateShortening(shortenerRepository repository.ShortenerRepository) useCaseCreateShortening {
+	return useCaseCreateShortening{
 		shortenerRepository: shortenerRepository,
 	}
 }
 
-func (g serviceCreateShortening) Do(ctx context.Context, command CommandCreateShortening) (aggregations.Url, error) {
-	anUrl, err := aggregations.NewUrl(command.Url(), command.UserId())
+func (g useCaseCreateShortening) Do(ctx context.Context, command CommandCreateShortening) (aggregations.Url, error) {
+	anUrl, err := aggregations.NewUrl(command.Url(), command.UserId(), command.UrlUuid())
 	if err != nil {
 		return aggregations.Url{}, err
 	}
