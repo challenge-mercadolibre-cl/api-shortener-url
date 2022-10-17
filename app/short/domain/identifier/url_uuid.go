@@ -1,24 +1,18 @@
 package identifier
 
 import (
-	"fmt"
 	"github.com/google/uuid"
-	"strings"
 )
 
 type UrlUuid struct {
-	value uuid.UUID
+	value string
 }
 
 func NewUrlUuid(url string, userId string) (urlId UrlUuid, err error) {
-	reader := strings.NewReader(fmt.Sprintf("%s:%s", url, userId))
-	value, err := uuid.NewRandomFromReader(reader)
-	if err != nil {
-		return UrlUuid{}, err
-	}
-	return UrlUuid{value: value}, nil
+	shortCode := uuid.New().String()[:8]
+	return UrlUuid{value: shortCode}, nil
 }
 
-func (o UrlUuid) Value() uuid.UUID {
+func (o UrlUuid) Value() string {
 	return o.value
 }

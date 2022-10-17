@@ -29,17 +29,14 @@ func main() {
 	})
 	shortenerRepository := persistence.NewShortenerRepositoryRedis(rdb)
 
-	shorteningCreateService := create_shortening.NewServiceCreateShortening(shortenerRepository)
-	shorteningCreateCommandHandler := create_shortening.NewCommandHandlerCreateShortening(shorteningCreateService)
-
 	shorteningUpdateService := update_shortening.NewServiceUpdateShortening(shortenerRepository)
 	shorteningUpdateCommandHandler := update_shortening.NewCommandHandlerUpdateShortening(shorteningUpdateService)
 
 	shorteningFindOneUseCase := find_one_shortening.NewUseCaseFindOneShortening(shortenerRepository)
-	commandBus.Register(create_shortening.CommandTypeCreateShortening, shorteningCreateCommandHandler)
+	shorteningCreateUseCase := create_shortening.NewServiceCreateShortening(shortenerRepository)
 	commandBus.Register(update_shortening.CommandTypeUpdateShortening, shorteningUpdateCommandHandler)
 
-	controller.NewShortenerHandler(server, commandBus, shorteningFindOneUseCase)
+	controller.NewShortenerHandler(server, commandBus, shorteningFindOneUseCase, shorteningCreateUseCase)
 	go func() {
 		if err := server.StartServer(rest.Setup(config.Server.Host, config.Server.Port)); err != http.ErrServerClosed {
 			server.Logger.Fatal("shutting down the server")

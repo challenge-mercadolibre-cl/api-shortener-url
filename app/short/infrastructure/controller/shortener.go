@@ -20,10 +20,11 @@ type ShortenerResponse struct {
 type shortenerController struct {
 	commandBus     command.CommandBus
 	useCaseFindOne find_one_shortening.UseCaseFindOneShortening
+	useCaseCreate  create_shortening.ServiceCreateShortening
 }
 
-func NewShortenerHandler(e *echo.Echo, commandBus command.CommandBus, useCaseFindOne find_one_shortening.UseCaseFindOneShortening) {
-	h := &shortenerController{commandBus: commandBus, useCaseFindOne: useCaseFindOne}
+func NewShortenerHandler(e *echo.Echo, commandBus command.CommandBus, useCaseFindOne find_one_shortening.UseCaseFindOneShortening, useCaseCreate create_shortening.ServiceCreateShortening) {
+	h := &shortenerController{commandBus: commandBus, useCaseFindOne: useCaseFindOne, useCaseCreate: useCaseCreate}
 	e.POST("/url/shortener", h.CreateShortenerUrl)
 	e.PUT("/url/shortener/:id", h.EditShortenerUrl)
 	e.GET("/url/shortener/:id", h.FindOneShortener)
@@ -54,7 +55,7 @@ func (s shortenerController) FindOneShortener(c echo.Context) error {
 
 	useCase, err := s.useCaseFindOne.Do(ctx, cmd)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "bad request")
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, ShortenerResponse{
 		Status: http.StatusOK,
@@ -67,19 +68,17 @@ func (s shortenerController) CreateShortenerUrl(c echo.Context) error {
 	r := new(createRequest)
 	err := c.Bind(r)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "bad request")
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 	cmd := create_shortening.NewCommandCreateShortening(r.Url, r.UserId)
-	err = s.commandBus.Dispatch(ctx, cmd)
+	useCase, err := s.useCaseCreate.Do(ctx, cmd)
 	if err != nil {
 		log.WithError(err).Error(err.Error())
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
-	urlUuid, _ := identifier.NewUrlUuid(r.Url, r.UserId)
-
 	return c.JSON(http.StatusCreated, ShortenerResponse{
 		Status: 201,
-		Data:   urlUuid.Value().String(),
+		Data:   useCase.UrlId().Value(),
 	})
 }
 func (s shortenerController) EditShortenerUrl(c echo.Context) error {
@@ -104,7 +103,7 @@ func (s shortenerController) EditShortenerUrl(c echo.Context) error {
 
 	return c.JSON(http.StatusCreated, ShortenerResponse{
 		Status: 201,
-		Data:   urlUuid.Value().String(),
+		Data:   urlUuid.Value(),
 	})
 
 }
