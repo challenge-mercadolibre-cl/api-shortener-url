@@ -12,3 +12,5 @@ type ShortenerRepository interface {
 	Edit(ctx context.Context, url aggregations.Url, urlId identifier.UrlId) error
 	Get(ctx context.Context, urlId identifier.UrlId) (vo.UrlLink, error)
 }
+
+//go:generate mockery --case=snake --outpkg=repositorymock --output=../mocks/repositorymock --name=ShortenerRepository

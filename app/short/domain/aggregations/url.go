@@ -11,22 +11,16 @@ type Url struct {
 	urlLink vo.UrlLink
 }
 
-func NewUrl(link string, userId string) (Url, error) {
-	userIdIdentifier, err := identifier.NewUserId(userId)
+func NewUrl(anLink string, anUserId string, anUrlId string) (Url, error) {
+	userIdIdentifier, err := identifier.NewUserId(anUserId)
 	if err != nil {
 		return Url{}, err
 	}
-
-	urlUuid, err := identifier.NewUrlUuid(link, userIdIdentifier.Value())
+	urlId, err := identifier.NewUrlId(anUrlId)
 	if err != nil {
 		return Url{}, err
 	}
-
-	urlId, err := identifier.NewUrlId(urlUuid.Value())
-	if err != nil {
-		return Url{}, err
-	}
-	urlLink, err := vo.NewUrlLink(link)
+	urlLink, err := vo.NewUrlLink(anLink)
 	if err != nil {
 		return Url{}, err
 	}
