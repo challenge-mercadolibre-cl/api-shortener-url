@@ -47,3 +47,12 @@
 
 - **Redis UI:** 9000
 - **API:** 8080
+
+## Diagrams
+
+- [Diagram Flow](./docs/Diagram%20Flow.jpg)
+- [Architecture Sync](./docs/Architecture%20Synchronous.jpg)
+
+## Explain
+
+- [tecnologias.md](./docs/tecnologias.md)
