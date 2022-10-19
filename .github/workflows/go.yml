@@ -24,8 +24,6 @@ jobs:
         key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-golang-
-    - name: Install Convert Coverage Module
-      run:  go get github.com/axw/gocov/gocov && go get github.com/AlekSi/gocov-xml
 
     - name: Build
       run: go build -v ./...
@@ -33,14 +31,5 @@ jobs:
     - name: Test
       run: go test ./... -coverprofile=coverage.out
 
-    - name: Convert Coverage
-      run: gocov convert coverage.out | gocov-xml > coverage.xml
-
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
-        files: ./coverage.xml
-        name: codecov-shortener
-        verbose: true
