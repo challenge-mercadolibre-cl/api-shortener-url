@@ -2,6 +2,13 @@ package main
 
 import (
 	"context"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	_ "github.com/challenge-mercadolibre-cl/api-shortener-url/app/docs"
 	"github.com/challenge-mercadolibre-cl/api-shortener-url/app/shared/infrastructure/bus/inmemory"
 	"github.com/challenge-mercadolibre-cl/api-shortener-url/app/shared/infrastructure/rest"
 	"github.com/challenge-mercadolibre-cl/api-shortener-url/app/shared/infrastructure/utils"
@@ -11,11 +18,6 @@ import (
 	"github.com/challenge-mercadolibre-cl/api-shortener-url/app/short/infrastructure/controller"
 	"github.com/challenge-mercadolibre-cl/api-shortener-url/app/short/infrastructure/persistence"
 	"github.com/go-redis/redis/v8"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 func main() {
