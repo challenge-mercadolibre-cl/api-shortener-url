@@ -15,20 +15,32 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: 1.19
+    - name: Setup Golang caches
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-golang-
+    - name: Install Convert Coverage Module
+      run:  go get github.com/axw/gocov/gocov && go get github.com/AlekSi/gocov-xml
+
     - name: Build
       run: go build -v ./...
 
     - name: Test
-      run:
-        - go test ./... -coverprofile=coverage.out
-        - gocov convert coverage.out | gocov-xml > coverage.xml
+      run: go test ./... -coverprofile=coverage.out
+
+    - name: Convert Coverage
+      run: gocov convert coverage.out | gocov-xml > coverage.xml
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
         files: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        path_to_write_report: ./coverage/codecov_report.txt
+        name: codecov-shortener
         verbose: true
