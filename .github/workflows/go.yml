@@ -15,7 +15,6 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: 1.19
-
     - name: Build
       run: go build -v ./...
 
@@ -24,12 +23,12 @@ jobs:
         - go test ./... -coverprofile=coverage.out
         - gocov convert coverage.out | gocov-xml > coverage.xml
     - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          files: ./coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-          path_to_write_report: ./coverage/codecov_report.txt
-          verbose: true
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+        files: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        path_to_write_report: ./coverage/codecov_report.txt
+        verbose: true
