@@ -5,6 +5,7 @@ import (
 	"github.com/challenge-mercadolibre-cl/api-shortener-url/app/shared/infrastructure/log"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
+	"go.elastic.co/apm/module/apmechov4/v2"
 	"net/http"
 	"time"
 )
@@ -16,6 +17,7 @@ const (
 
 func New() *echo.Echo {
 	server := echo.New()
+	server.Use(apmechov4.Middleware())
 	server.Use(log.EchoLogger())
 	server.Use(echoMiddleware.Logger())
 	server.Use(echoMiddleware.Recover())
