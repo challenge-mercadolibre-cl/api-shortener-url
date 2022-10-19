@@ -2,9 +2,6 @@ package rest
 
 import (
 	"fmt"
-	"net/http"
-	"time"
-
 	"github.com/challenge-mercadolibre-cl/api-shortener-url/app/shared/infrastructure/log"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
