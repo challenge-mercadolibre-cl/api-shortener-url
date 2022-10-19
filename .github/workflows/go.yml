@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
@@ -21,4 +20,16 @@ jobs:
       run: go build -v ./...
 
     - name: Test
-      run: go test -v ./...
+      run:
+        - go test ./... -coverprofile=coverage.out
+        - gocov convert coverage.out | gocov-xml > coverage.xml
+    - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          path_to_write_report: ./coverage/codecov_report.txt
+          verbose: true
