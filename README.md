@@ -29,6 +29,20 @@
    ```
 3. Happy Coding.
 
+## Usage for testing without coverage.
+
+1. Execute command.
+   ```sh
+   go test ./..
+   ```
+
+## Usage for testing with coverage.
+
+1. Execute command.
+   ```sh
+   go test ./... -cover
+   ```
+
 ## Default port services
 
 - **Redis UI:** 9000
