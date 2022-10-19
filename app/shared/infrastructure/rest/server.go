@@ -5,6 +5,7 @@ import (
 	"github.com/challenge-mercadolibre-cl/api-shortener-url/app/shared/infrastructure/log"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"go.elastic.co/apm/module/apmechov4/v2"
 	"net/http"
 	"time"
@@ -25,6 +26,7 @@ func New() *echo.Echo {
 	server.Validator = NewValidator()
 	server.HideBanner = true
 	NewHealthHandler(server)
+	server.GET("/swagger/*", echoSwagger.EchoWrapHandler(func(c *echoSwagger.Config) { c.URL = "./swagger/doc.json" }))
 	return server
 }
 
