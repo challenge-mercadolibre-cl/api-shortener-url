@@ -65,3 +65,37 @@ Cuando se tiene _multiples nodos / instancias configuradas_ y se utiliza **Memca
 ## ¿Por qué test container?.
 
 **Testcontainers** nos permita realizar testing de integración directamente, de está forma, levantando contenedores de docker durante mi suite de caso de pruebas puedo revisar que la integración este correcta _(en este caso, fue la integración realizada hacía Redis donde NO debo realizar ningun mock sobre los servicios)_
+
+---
+
+# ¿Como se calculo el Id de las URL's?.
+Si bien se verifico distintas opciones para generas las **ids de urls a partir de string**, tales como:
+- Base58
+- Base62
+- UUID (indistinto de la versión)
+
+Se opto por la idea de ir con un **UUID aleatorio** _(a diferencia de que se genere uno a partir de un string, porque este se podría eventualmente "repetir". El string pensado era la combinación de userId:longUrl)_ que solo utilice 8 caracteres, para optar por el buen uso de:
+- Bytes persistidos en Redis.
+- Acortar url y dar preferencia al contenido del Tweet para compartir mediante twitter.
+
+# ¿Cómo se podrá obtener estadisticas sobre las urls?.
+Para obtener estadisticas sobre las URLS utilizaremos Kafka para realizar streaming de eventos, los eventos que vamos a tener en consideración serán:
+- URL_LINK_WAS_SEE: Cuando una URL fue visitada.
+- URL_LINK_WAS_CREATED: Cuando una URL fue creada.
+- URL_LINK_WAS_UPDATED: Cuando una URL fue modificada.
+- URL_LINK_WAS_DISABLED: Cuando una URL fue deshabilitada.
+- URL_LINK_WAS_ENABLED: Cuando una URL fue habilitada.
+
+Al tener **Kafka** como nuestro streaming de eventos y message broker, nos permite fácilmente utilizar **Kafka Connect** para enviar los eventos a otra fuente de datos y de esa forma realizar dashboard / procesos de analitica avanzada.
+
+
+# ¿Que ocurre ante una catastrofe que se pierda el Redis?.
+Como tenemos el streaming de eventos ocurriendo en Kafka y tenemos un periodo de una semana (que es configurable para que los mensajes de los topicos no se puedan leer), se pueden realizar consumidores que estos permiten persistir la información a un postgress (está información será más "historica" para tener en caso que ocurra una catastrofe)
+
+# ¿Podemos implementar un algoritmo de desalojo de datos?.
+Dado que el requerimiento es que los datos **NUNCA SE ELIMINAN** se opta porque no se puedan desalojar dichos datos y no requiere que se implemente un algoritmo de desalojo en la fuente de datos principal. 
+
+Si se requiere realizar un desalojo de datos en la fuente de datos "caché", se sugiere:
+- Realizar a partir del timestamp del último acceso (LAST_ACCESS_TIME)
+
+- ¿Por qué?, por que eso informará que ya no tiene tráfico dicha url pasado cierto tiempo. De todas formas, se puede implementar otras formas donde se opte por el timestamp de creación o actualización, eso se debe definir al momento de realizar el flujo. Considerando además si existirá una división entre cuentas "free" y cuentas de pago.
