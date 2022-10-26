@@ -52,7 +52,9 @@
 
 - [Diagram Flow](./docs/Diagram%20Flow.jpg)
 - [Architecture Sync](./docs/Architecture%20Synchronous.jpg)
-- [Diagram Flow Async](./docs/Flow%20Async.png)
+- [Diagram Flow Async](./docs/Flow%20Async.jpg)
+- [Architecture Disaster Recovery (ADR)](<./docs/Architecture%20Disaster%20Recovery%20(ADR).jpg>)
+- [Architecture for stats](./docs/Architecture%20for%20Stats.jpg)
 
 ## Explain
 
@@ -63,3 +65,11 @@
 - [Testing Stress](./docs/Prueba%20Estress.jpg)
 - RPS: 3090
 - RPM Projection: 185400 (TPS x 60)
+
+- [Infrastructure K8s](./docs/Evidence%20Infrastructure.png)
+- HPA (Horizontal Pod Autoscaler)
+  -> Min: 40 pods
+  -> Max: 300 pods
+  -> Metrics for HPA
+  --> CPU: 80%
+  --> RAM: 80%.
